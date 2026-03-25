@@ -56,6 +56,12 @@ async function main() {
     process.stdout.write(`Wrote portal manifest to ${portalManifestPath}\n`);
   }
 
+  if (args.portalOnly) {
+    process.stdout.write(`Portal items discovered: ${portal.items.length} via ${portal.fetchSource || "unknown"}\n`);
+    process.stdout.write(`Portal placements discovered: ${portal.placementCount}\n`);
+    return;
+  }
+
   const limitedItems = args.limit > 0 ? portal.items.slice(0, args.limit) : portal.items;
   const pages = await mapLimit(limitedItems, args.concurrency, async (item) => {
     try {

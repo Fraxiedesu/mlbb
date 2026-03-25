@@ -1,6 +1,14 @@
 import { scoringWeights } from "@/app/config/scoring";
 import type { HeroData, ItemData, ItemRecommendation } from "@/app/types/data";
 import { average, countMatches, sortByScore, unique } from "@/app/utils/collections";
+import {
+  getItemCategoryFitNotes,
+  isDefenseItemCategory,
+  isJunglingItemCategory,
+  isMovementItemCategory,
+  isOffenseItemCategory,
+  isRoamingItemCategory
+} from "@/app/utils/items";
 
 function collectEnemyTags(enemies: HeroData[]) {
   return unique(enemies.flatMap((hero) => hero.normalizedTags));
@@ -40,18 +48,33 @@ function scoreItemForHero(hero: HeroData, item: ItemData, enemies: HeroData[]) {
 
   if (countMatches(item.typicalBuilders.heroTags, hero.normalizedTags) > 0) {
     score += scoringWeights.items.tagFit;
+    reasons.push("Matches this hero's build identity");
   }
 
-  if (hero.damageProfile.primary === "Magic" && item.category === "Magic") {
+  const categoryFitNotes = getItemCategoryFitNotes(hero, item);
+  if (categoryFitNotes.length > 0) {
     score += scoringWeights.items.damageTypeFit;
+    reasons.push(...categoryFitNotes.slice(0, 2));
   }
 
-  if (hero.damageProfile.primary === "Physical" && item.category === "Attack") {
-    score += scoringWeights.items.damageTypeFit;
+  if (isOffenseItemCategory(item.category) && hero.damageProfile.primary === "Mixed") {
+    score += 2;
   }
 
-  if (hero.role.some((role) => ["Tank", "Fighter", "Support"].includes(role)) && item.category === "Defense") {
-    score += scoringWeights.items.damageTypeFit;
+  if (isDefenseItemCategory(item.category) && hero.normalizedTags.includes("Anti-Dive")) {
+    score += 2;
+  }
+
+  if (isMovementItemCategory(item.category) && hero.normalizedTags.includes("Mobility")) {
+    score += 2;
+  }
+
+  if (isJunglingItemCategory(item.category) && hero.lanes.includes("Jungle")) {
+    score += 3;
+  }
+
+  if (isRoamingItemCategory(item.category) && (hero.lanes.includes("Roam") || hero.role.some((role) => ["Tank", "Support"].includes(role)))) {
+    score += 3;
   }
 
   if (threat.heavySustain && item.situationalUsageTags.includes("Anti-Heal")) {
@@ -80,6 +103,18 @@ function scoreItemForHero(hero: HeroData, item: ItemData, enemies: HeroData[]) {
 
   if (threat.physicalThreat >= threat.magicThreat && item.situationalUsageTags.includes("Physical Defense")) {
     score += scoringWeights.items.situationalNeed;
+  }
+
+  if (item.category === "Movement" && hero.ratings.mobility >= 4) {
+    score += 2;
+  }
+
+  if (item.category === "Jungling" && hero.ratings.early >= 4) {
+    score += 2;
+  }
+
+  if (item.category === "Roaming" && hero.ratings.teamfight >= 4) {
+    score += 2;
   }
 
   return { score, reasons: reasons.slice(0, 3) };

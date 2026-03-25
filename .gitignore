@@ -13,3 +13,6 @@ pnpm-debug.log*
 .env.*
 !.env.example
 zzz.txt
+scripts/liquipedia-item-scraper/out/items.probe*.json
+dataset/raw/items/items.parsed.json
+dataset/raw/items/items.portal.json

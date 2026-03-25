@@ -6,6 +6,7 @@
   "generatedCatalogs": {
     "heroPages": "dataset/sources/liquipedia.hero-pages.json",
     "itemCatalogStatus": "dataset/sources/liquipedia.item-catalog-status.json",
+    "itemSearchRecovered": "dataset/raw/items/items.search-recovered.json",
     "heroRawDataset": "dataset/production/heroes.liquipedia.raw.json",
     "heroAppSeed": "dataset/samples/heroes.seed.json"
   },
@@ -18,6 +19,7 @@
       "Movement": 11,
       "Jungling": 3,
       "Roaming": 4,
+      "searchRecoveredPages": 58,
       "uniquePages": 104,
       "portalPlacements": 109
     }
@@ -168,6 +170,7 @@
     "Starter seed uses direct Liquipedia hero/item pages plus the two portal pages as the catalog roots.",
     "Full hero coverage is now checked in through dataset/sources/liquipedia.hero-pages.json and dataset/samples/heroes.seed.json.",
     "Equipment category totals are validated, but a fresh full item-page harvest is currently blocked by Liquipedia rate limiting on this machine.",
+    "A partial recovery set of 58 verified item pages was added from Liquipedia search snippets.",
     "Numeric costs were left null in the starter item seed where the current extraction pass did not verify them directly.",
     "Hero catalog expanded from the Liquipedia scrape artifact to the full 132-hero roster.",
     "Item catalog still requires a fresh equipment scrape after Liquipedia's rate-limit CAPTCHA is cleared."

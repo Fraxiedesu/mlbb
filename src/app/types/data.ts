@@ -50,7 +50,8 @@ export type TeamStyle =
   | "Scaling";
 export type DamageType = "Physical" | "Magic" | "True" | "Mixed" | "None";
 export type RangeType = "Melee" | "Ranged" | "Mixed";
-export type ItemCategory = "Attack" | "Defense" | "Magic" | "Movement" | "Jungling" | "Roaming" | "Roam";
+export type ItemCategory = "Attack" | "Defense" | "Magic" | "Movement" | "Jungling" | "Roaming";
+export type ItemStatValue = number | string;
 export type ItemTag =
   | "Anti-Heal"
   | "Anti-Burst"
@@ -149,7 +150,7 @@ export interface ItemData {
   category: ItemCategory;
   cost: number | null;
   sourceRefs: SourceRef[];
-  statsGranted: Record<string, number | string>;
+  statsGranted: Record<string, ItemStatValue>;
   passiveEffects: Array<{
     name: string;
     description: string;

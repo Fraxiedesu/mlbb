@@ -88,6 +88,7 @@ export function parseArgv(argv) {
     mode: "parsed",
     out: null,
     portalOut: null,
+    portalOnly: false,
     portal: "https://liquipedia.net/mobilelegends/Portal:Equipment",
     baseUrl: "https://liquipedia.net/mobilelegends",
     limit: 0,
@@ -120,6 +121,9 @@ export function parseArgv(argv) {
         break;
       case "--portal-out":
         parsed.portalOut = consumeNext() || parsed.portalOut;
+        break;
+      case "--portal-only":
+        parsed.portalOnly = true;
         break;
       case "--portal":
         parsed.portal = consumeNext() || parsed.portal;

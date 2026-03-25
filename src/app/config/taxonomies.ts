@@ -1,4 +1,4 @@
-import type { CounterTag, HeroTag, ItemTag, TeamStyle } from "@/app/types/data";
+import type { CounterTag, HeroTag, ItemCategory, ItemTag, TeamStyle } from "@/app/types/data";
 
 export const HERO_TAGS: HeroTag[] = [
   "Poke",
@@ -55,6 +55,24 @@ export const ITEM_TAGS: ItemTag[] = [
   "Anti-Dive",
   "Poke Support",
   "DPS Boost"
+];
+
+export const ITEM_CATEGORIES: ItemCategory[] = [
+  "Attack",
+  "Defense",
+  "Magic",
+  "Movement",
+  "Jungling",
+  "Roaming"
+];
+
+export const ITEM_CATEGORY_LABELS: Array<{ id: ItemCategory; label: string }> = [
+  { id: "Attack", label: "Attack" },
+  { id: "Defense", label: "Defense" },
+  { id: "Magic", label: "Magic" },
+  { id: "Movement", label: "Movement" },
+  { id: "Jungling", label: "Jungling" },
+  { id: "Roaming", label: "Roaming" }
 ];
 
 export const TEAM_STYLES: TeamStyle[] = [

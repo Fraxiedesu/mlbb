@@ -6,6 +6,7 @@
   "notes": [
     "Liquipedia equipment portal category totals were successfully validated before the local IP was rate limited.",
     "A later full scrape attempt from this machine returned a rate-limit response, so there is not yet a trustworthy full item page manifest checked in.",
+    "A separate search-snippet recovery pass captured 58 real Liquipedia item pages in dataset/raw/items/items.search-recovered.json.",
     "Portal placements exceed unique item pages because some items appear in more than one category grouping."
   ],
   "categoryCounts": {
@@ -16,6 +17,7 @@
     "Jungling": 3,
     "Roaming": 4
   },
+  "searchRecoveredPages": 58,
   "uniqueItemPages": 104,
   "portalPlacements": 109
 }
