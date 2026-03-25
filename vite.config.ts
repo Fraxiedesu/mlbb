@@ -3,6 +3,7 @@ import solid from "vite-plugin-solid";
 import { resolve } from "node:path";
 
 export default defineConfig({
+  base: "/mlbb/",
   plugins: [solid()],
   resolve: {
     alias: {
