@@ -1,4 +1,4 @@
-import type { DraftStage, RankTier, TeamSide } from "./data";
+import type { DraftStage, Lane, RankTier, TeamSide } from "./data";
 
 export interface DraftAction {
   phase: Exclude<DraftStage, "postDraft">;
@@ -8,7 +8,15 @@ export interface DraftAction {
 
 export interface TeamDraftState {
   bans: string[];
-  picks: string[];
+  picks: Array<{
+    heroId: string;
+    lane: Lane;
+  }>;
+}
+
+export interface DraftPickView {
+  heroId: string;
+  lane: Lane;
 }
 
 export interface DraftState {
@@ -18,5 +26,6 @@ export interface DraftState {
   history: Array<{
     action: DraftAction;
     heroId: string;
+    lane?: Lane;
   }>;
 }

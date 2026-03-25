@@ -1,6 +1,8 @@
 import { scoringWeights } from "@/app/config/scoring";
-import type { CounterTag, HeroData, HeroRecommendation, HeroTag, ScoreBreakdown } from "@/app/types/data";
+import type { CounterTag, HeroData, HeroRecommendation, HeroTag, Lane, ScoreBreakdown } from "@/app/types/data";
 import { average, countMatches, sortByScore, unique } from "@/app/utils/collections";
+
+const STANDARD_LANES: Lane[] = ["Roam", "EXP", "Jungle", "Gold", "Mid"];
 
 const ENEMY_TAG_TO_RESPONSES: Partial<Record<HeroTag, CounterTag[]>> = {
   Engage: ["Anti-Dive", "CC Lock"],
@@ -29,10 +31,11 @@ function collectStyles(heroes: HeroData[]) {
   return unique(heroes.flatMap((hero) => hero.fitStyles));
 }
 
-function detectTeamNeeds(allies: HeroData[]) {
+function detectTeamNeeds(allies: HeroData[], assignedLanes: Lane[] = []) {
   const tags = collectTags(allies);
   const physicalCount = allies.filter((hero) => hero.damageProfile.primary === "Physical").length;
   const magicCount = allies.filter((hero) => hero.damageProfile.primary === "Magic").length;
+  const missingAssignedLanes = STANDARD_LANES.filter((lane) => !assignedLanes.includes(lane));
 
   return {
     needsFrontline: !tags.includes("Frontline"),
@@ -41,7 +44,8 @@ function detectTeamNeeds(allies: HeroData[]) {
     needsBacklineCarry: !tags.includes("Backline Carry"),
     needsMagicDamage: allies.length > 0 && magicCount === 0,
     needsPhysicalDamage: allies.length > 0 && physicalCount === 0,
-    needsObjectiveControl: average(allies.map((hero) => hero.ratings.objective)) < 3
+    needsObjectiveControl: average(allies.map((hero) => hero.ratings.objective)) < 3,
+    missingAssignedLanes
   };
 }
 
@@ -76,13 +80,18 @@ export function buildBanRecommendations(availableHeroes: HeroData[]) {
   );
 }
 
-export function buildHeroRecommendations(availableHeroes: HeroData[], allies: HeroData[], enemies: HeroData[]): HeroRecommendation[] {
+export function buildHeroRecommendations(
+  availableHeroes: HeroData[],
+  allies: HeroData[],
+  enemies: HeroData[],
+  options: { allyAssignedLanes?: Lane[] } = {}
+): HeroRecommendation[] {
   const allyTags = collectTags(allies);
   const allyRoles = collectRoles(allies);
   const allyStyles = collectStyles(allies);
   const enemyTags = collectTags(enemies);
   const enemyResponses = unique(enemyTags.flatMap((tag) => ENEMY_TAG_TO_RESPONSES[tag] ?? []));
-  const needs = detectTeamNeeds(allies);
+  const needs = detectTeamNeeds(allies, options.allyAssignedLanes ?? []);
   const enemyBurst = average(enemies.map((hero) => hero.ratings.burst));
   const enemyMobility = average(enemies.map((hero) => hero.ratings.mobility));
 
@@ -189,7 +198,15 @@ export function buildHeroRecommendations(availableHeroes: HeroData[], allies: He
         fitReasons.push("Helps secure neutral objectives");
       }
 
-      const overall = counterScore * 0.45 + synergyScore * 0.4 + fitScore * 0.15;
+      const matchingMissingLanes = hero.lanes.filter((lane) => needs.missingAssignedLanes.includes(lane));
+      if (matchingMissingLanes.length > 0) {
+        fitScore += scoringWeights.synergy.gapCoverage + matchingMissingLanes.length * 2;
+        fitReasons.push(`Covers missing lane ${matchingMissingLanes.join(" / ")}`);
+      }
+
+      const overall = enemies.length > 0
+        ? counterScore * 0.6 + synergyScore * 0.25 + fitScore * 0.15
+        : counterScore * 0.35 + synergyScore * 0.45 + fitScore * 0.2;
 
       return {
         hero,

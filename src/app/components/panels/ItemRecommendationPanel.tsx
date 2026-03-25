@@ -1,7 +1,9 @@
 import { For, Show } from "solid-js";
-import type { ItemRecommendation } from "@/app/types/data";
+import { EntityIcon } from "@/app/components/ui/EntityIcon";
 import { Pill } from "@/app/components/ui/Pill";
 import { SectionCard } from "@/app/components/ui/SectionCard";
+import type { ItemRecommendation } from "@/app/types/data";
+import { getItemIconUrl } from "@/app/utils/media";
 
 interface ItemRecommendationPanelProps {
   title: string;
@@ -26,10 +28,18 @@ export function ItemRecommendationPanel(props: ItemRecommendationPanelProps) {
                     {(recommendation) => (
                       <div class="rounded-2xl border border-white/10 bg-white/5 p-3">
                         <div class="mb-2 flex items-center justify-between gap-3">
-                          <p class="font-medium text-slate-100">{recommendation.item.name}</p>
+                          <div class="flex items-center gap-3">
+                            <EntityIcon
+                              src={getItemIconUrl(recommendation.item)}
+                              alt={`${recommendation.item.name} icon`}
+                              label={recommendation.item.name}
+                              sizeClass="h-10 w-10"
+                            />
+                            <p class="font-medium text-slate-100">{recommendation.item.name}</p>
+                          </div>
                           <Pill label={recommendation.tier} tone={recommendation.tier === "Core" ? props.tone : "neutral"} />
                         </div>
-                        <p class="text-sm text-slate-300/85">{recommendation.reasons.join(" • ")}</p>
+                        <p class="text-sm text-slate-300/85">{recommendation.reasons.join(" â€¢ ")}</p>
                       </div>
                     )}
                   </For>

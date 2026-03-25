@@ -1,7 +1,9 @@
 import { For, Show } from "solid-js";
-import type { HeroRecommendation } from "@/app/types/data";
+import { EntityIcon } from "@/app/components/ui/EntityIcon";
 import { Pill } from "@/app/components/ui/Pill";
 import { SectionCard } from "@/app/components/ui/SectionCard";
+import type { HeroRecommendation } from "@/app/types/data";
+import { getHeroIconUrl } from "@/app/utils/media";
 
 interface SuggestionPanelProps {
   mode: "ban" | "pick";
@@ -19,9 +21,12 @@ export function SuggestionPanel(props: SuggestionPanelProps) {
           {(entry, index) => (
             <div class="rounded-3xl border border-white/10 bg-black/10 p-4">
               <div class="mb-3 flex items-start justify-between gap-3">
-                <div>
-                  <p class="font-display text-lg font-semibold text-dawn-100">#{index() + 1} {entry.hero.name}</p>
-                  <p class="text-sm text-slate-400">{entry.hero.role.join(" / ")} • {entry.hero.lanes.join(" / ")}</p>
+                <div class="flex items-start gap-3">
+                  <EntityIcon src={getHeroIconUrl(entry.hero)} alt={`${entry.hero.name} icon`} label={entry.hero.name} shape="circle" />
+                  <div>
+                    <p class="font-display text-lg font-semibold text-dawn-100">#{index() + 1} {entry.hero.name}</p>
+                    <p class="text-sm text-slate-400">{entry.hero.role.join(" / ")} â€¢ {entry.hero.lanes.join(" / ")}</p>
+                  </div>
                 </div>
                 <Pill label={`${Math.round(entry.overall)} score`} tone="alert" />
               </div>
@@ -30,9 +35,9 @@ export function SuggestionPanel(props: SuggestionPanelProps) {
               </div>
               <Show when={props.mode === "pick"} fallback={<p class="text-sm text-slate-300/80">{entry.counter.reasons[0] ?? "Broad draft threat with high conversion value."}</p>}>
                 <div class="space-y-2 text-sm text-slate-300/85">
-                  <p><span class="text-tide-300">Counter:</span> {entry.counter.reasons.join(" • ") || "Stable all-around answer."}</p>
-                  <p><span class="text-ember-300">Synergy:</span> {entry.synergy.reasons.join(" • ") || "Flexible fit into the current team."}</p>
-                  <p><span class="text-dawn-100">Draft fit:</span> {entry.fitBonus.reasons.join(" • ") || "No major draft-gap bonus required."}</p>
+                  <p><span class="text-tide-300">Counter:</span> {entry.counter.reasons.join(" â€¢ ") || "Stable all-around answer."}</p>
+                  <p><span class="text-ember-300">Synergy:</span> {entry.synergy.reasons.join(" â€¢ ") || "Flexible fit into the current team."}</p>
+                  <p><span class="text-dawn-100">Draft fit:</span> {entry.fitBonus.reasons.join(" â€¢ ") || "No major draft-gap bonus required."}</p>
                 </div>
               </Show>
             </div>

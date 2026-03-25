@@ -1,19 +1,21 @@
 import { For, createMemo, createSignal } from "solid-js";
-import { Pill } from "@/app/components/ui/Pill";
+import { EntityIcon } from "@/app/components/ui/EntityIcon";
 import type { HeroData, Lane } from "@/app/types/data";
+import { getHeroIconUrl } from "@/app/utils/media";
 
 interface HeroPoolProps {
   heroes: HeroData[];
   activeTeam: "A" | "B";
   phase: "ban" | "pick" | "postDraft";
-  onSelect: (heroId: string) => void;
+  missingLanes?: Lane[];
+  onSelect: (heroId: string, lane?: Lane) => void;
 }
 
 export function HeroPool(props: HeroPoolProps) {
   const [query, setQuery] = createSignal("");
   const [lane, setLane] = createSignal<"All" | Lane>("All");
 
-  const laneOptions = createMemo<(Lane | "All")[]>(() => {
+  const laneOptions = createMemo<Array<"All" | Lane>>(() => {
     const lanes = new Set<Lane>();
 
     for (const hero of props.heroes) {
@@ -22,7 +24,8 @@ export function HeroPool(props: HeroPoolProps) {
       }
     }
 
-    return ["All", ...Array.from(lanes).sort()];
+    const options = Array.from(lanes).sort();
+    return ["All", ...options];
   });
 
   const filtered = createMemo(() => {
@@ -51,7 +54,7 @@ export function HeroPool(props: HeroPoolProps) {
       <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
         <div>
           <p class="font-display text-lg font-semibold">Hero Pool</p>
-          <p class="text-sm text-slate-300/80">Select one hero at a time. Banned and already-picked heroes are excluded automatically.</p>
+          <p class="text-sm text-slate-300/80">Dense draft grid for faster scanning. Banned and already-picked heroes are excluded automatically.</p>
         </div>
         <div class="grid gap-3 md:grid-cols-[minmax(0,1fr)_220px] xl:w-[34rem]">
           <input
@@ -68,7 +71,7 @@ export function HeroPool(props: HeroPoolProps) {
             <For each={laneOptions()}>
               {(option) => (
                 <option value={option} class="bg-slate-950">
-                  {option === "All" ? "All Lanes" : option}
+                  {option === "All" ? (props.phase === "pick" ? "Auto Lane" : "All Lanes") : option}
                 </option>
               )}
             </For>
@@ -76,26 +79,21 @@ export function HeroPool(props: HeroPoolProps) {
         </div>
       </div>
 
-      <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {props.phase === "pick" && props.missingLanes?.length ? (
+        <p class="text-sm text-slate-300/80">Missing lanes: {props.missingLanes.join(" / ")}. Auto lane will try to fill one of them first.</p>
+      ) : null}
+
+      <div class="grid gap-2 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
         <For each={filtered()}>
           {(hero) => (
             <button
               type="button"
-              onClick={() => props.onSelect(hero.id)}
+              onClick={() => props.onSelect(hero.id, props.phase === "pick" && lane() !== "All" ? (lane() as Lane) : undefined)}
               disabled={props.phase === "postDraft"}
-              class="rounded-3xl border border-white/10 bg-black/10 p-4 text-left transition hover:border-tide-300/30 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-60"
+              class="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/10 px-3 py-2 text-left transition hover:border-tide-300/30 hover:bg-white/5 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <div class="mb-3 flex items-start justify-between gap-3">
-                <div>
-                  <p class="font-display text-lg font-semibold text-dawn-100">{hero.name}</p>
-                  <p class="text-sm text-slate-400">{hero.role.join(" / ")} • {hero.lanes.join(" / ")}</p>
-                </div>
-                <Pill label={`Team ${props.activeTeam} ${props.phase}`} tone={props.activeTeam === "A" ? "teamA" : "teamB"} />
-              </div>
-              <div class="mb-3 flex flex-wrap gap-2">
-                <For each={hero.normalizedTags.slice(0, 4)}>{(tag) => <Pill label={tag} />}</For>
-              </div>
-              <p class="text-sm text-slate-300/85">{hero.strengths[0]}</p>
+              <EntityIcon src={getHeroIconUrl(hero)} alt={`${hero.name} icon`} label={hero.name} shape="circle" sizeClass="h-10 w-10" />
+              <span class="min-w-0 truncate font-medium text-dawn-100">{hero.name}</span>
             </button>
           )}
         </For>

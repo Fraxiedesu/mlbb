@@ -53,8 +53,8 @@ export function AppShell() {
         </section>
 
         <div class="grid gap-4 xl:grid-cols-2">
-          <TeamColumn team="A" bans={draft.teamBans("A")} picks={draft.teamHeroes("A")} banSlots={BAN_COUNTS[draft.state.rank]} />
-          <TeamColumn team="B" bans={draft.teamBans("B")} picks={draft.teamHeroes("B")} banSlots={BAN_COUNTS[draft.state.rank]} />
+          <TeamColumn team="A" bans={draft.teamBans("A")} picks={draft.teamPickEntries("A")} banSlots={BAN_COUNTS[draft.state.rank]} />
+          <TeamColumn team="B" bans={draft.teamBans("B")} picks={draft.teamPickEntries("B")} banSlots={BAN_COUNTS[draft.state.rank]} />
         </div>
 
         <Show
@@ -67,7 +67,13 @@ export function AppShell() {
         >
           <div class="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
             <SectionCard title="Draft Controls" subtitle="Separate ban phase by rank, then follow the configured 1-2-2-2-2-1 pick order.">
-              <HeroPool heroes={draft.availableHeroes()} activeTeam={draft.activeTeam()} phase={draft.stage()} onSelect={draft.commitHero} />
+              <HeroPool
+                heroes={draft.availableHeroes()}
+                activeTeam={draft.activeTeam()}
+                phase={draft.stage()}
+                missingLanes={draft.activeMissingLanes()}
+                onSelect={draft.commitHero}
+              />
             </SectionCard>
 
             <SuggestionPanel

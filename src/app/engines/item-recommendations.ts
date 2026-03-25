@@ -1,4 +1,4 @@
-import { scoringWeights } from "@/app/config/scoring";
+﻿import { scoringWeights } from "@/app/config/scoring";
 import type { HeroData, ItemData, ItemRecommendation } from "@/app/types/data";
 import { average, countMatches, sortByScore, unique } from "@/app/utils/collections";
 import {
@@ -122,8 +122,9 @@ function scoreItemForHero(hero: HeroData, item: ItemData, enemies: HeroData[]) {
 
 export function buildItemRecommendations(team: HeroData[], enemies: HeroData[], items: ItemData[]): ItemRecommendation[] {
   return team.map((hero) => {
+    const candidateItems = items.filter((item) => !(hero.damageProfile.range === "Ranged" && isDefenseItemCategory(item.category)));
     const recommendations = sortByScore(
-      items.map((item) => {
+      candidateItems.map((item) => {
         const { score, reasons } = scoreItemForHero(hero, item, enemies);
         const tier: "Core" | "Situational" = score >= 22 ? "Core" : "Situational";
 
@@ -143,3 +144,4 @@ export function buildItemRecommendations(team: HeroData[], enemies: HeroData[], 
     };
   });
 }
+
