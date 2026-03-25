@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Team Composition Metrics",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "label", "description"],
+    "properties": {
+      "id": { "type": "string" },
+      "label": { "type": "string" },
+      "description": { "type": "string" }
+    }
+  }
+}

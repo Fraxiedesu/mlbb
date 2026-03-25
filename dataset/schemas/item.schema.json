@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Item Seed",
+  "type": "object",
+  "required": ["id", "name", "category", "cost", "sourceRefs", "statsGranted", "passiveEffects", "activeEffects", "goodAgainstTags", "typicalBuilders", "situationalUsageTags"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "category": { "type": "string" },
+    "cost": { "type": ["number", "null"] },
+    "sourceRefs": { "type": "array", "items": { "type": "object" } },
+    "statsGranted": { "type": "object" },
+    "passiveEffects": { "type": "array", "items": { "type": "object" } },
+    "activeEffects": { "type": "array", "items": { "type": "string" } },
+    "goodAgainstTags": { "type": "array", "items": { "type": "string" } },
+    "typicalBuilders": { "type": "object" },
+    "situationalUsageTags": { "type": "array", "items": { "type": "string" } }
+  }
+}

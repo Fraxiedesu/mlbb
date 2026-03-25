@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Hero Seed",
+  "type": "object",
+  "required": ["id", "name", "role", "lanes", "sourceRefs", "baseStats", "damageProfile", "strengths", "weaknesses", "normalizedTags", "synergyProfile", "counterProfile", "fitStyles", "ratings"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "role": { "type": "array", "items": { "type": "string" } },
+    "lanes": { "type": "array", "items": { "type": "string" } },
+    "specialty": { "type": "array", "items": { "type": "string" } },
+    "resource": { "type": ["string", "null"] },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "url", "verifiedOn"],
+        "properties": {
+          "label": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "verifiedOn": { "type": "string" }
+        }
+      }
+    },
+    "baseStats": { "type": "object" },
+    "damageProfile": { "type": "object" },
+    "strengths": { "type": "array", "items": { "type": "string" } },
+    "weaknesses": { "type": "array", "items": { "type": "string" } },
+    "utilityTags": { "type": "array", "items": { "type": "string" } },
+    "normalizedTags": { "type": "array", "items": { "type": "string" } },
+    "synergyProfile": { "type": "object" },
+    "counterProfile": { "type": "object" },
+    "fitStyles": { "type": "array", "items": { "type": "string" } },
+    "ratings": { "type": "object" },
+    "kitSummary": { "type": "object" },
+    "scalingNotes": { "type": "array", "items": { "type": "string" } }
+  }
+}

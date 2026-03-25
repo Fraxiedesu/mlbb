@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-03-25T10:15:00+08:00",
+  "verifiedOn": "2026-03-25",
+  "portal": "https://liquipedia.net/mobilelegends/Portal:Equipment",
+  "status": "partial",
+  "notes": [
+    "Liquipedia equipment portal category totals were successfully validated before the local IP was rate limited.",
+    "A later full scrape attempt from this machine returned a rate-limit response, so there is not yet a trustworthy full item page manifest checked in.",
+    "Portal placements exceed unique item pages because some items appear in more than one category grouping."
+  ],
+  "categoryCounts": {
+    "Attack": 34,
+    "Magic": 31,
+    "Defense": 26,
+    "Movement": 11,
+    "Jungling": 3,
+    "Roaming": 4
+  },
+  "uniqueItemPages": 104,
+  "portalPlacements": 109
+}
